@@ -1,3 +1,41 @@
+## Project Organization:
+
+/src: Main source code
+Separate directories for controllers, models, routes, services, etc.
+
+
+### Key Components:
+
+Controllers: Handle HTTP requests and responses
+Services: Contain business logic
+Models: Define data schemas
+Routes: Map endpoints to controllers
+Middleware: Handle authentication, validation, error handling
+Config: Manage application configuration
+Utils: Provide helper functions
+
+
+### Features Included:
+
+User authentication with JWT
+MongoDB integration with Mongoose
+Error handling middleware
+Request validation
+Logging with Winston
+Security headers with Helmet
+API rate limiting
+
+
+### Development Setup:
+
+TypeScript configuration
+NPM scripts for development and production
+ESLint for code quality
+
+
+
+The structure is modular and scalable, making it easy to add new features or modify existing ones. You can explore the code examples to understand how each component works and how they interact with each other.
+
 // Project Structure
 /**
  * /
