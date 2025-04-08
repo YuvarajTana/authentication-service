@@ -1,20 +1,15 @@
-
-
-// 12. Error Middleware: src/middleware/errorMiddleware.ts
+// src/middleware/errorMiddleware.ts
 import { Request, Response, NextFunction } from 'express';
 import { AppError } from '../utils/errorHandler';
 import logger from '../utils/logger';
 
-export function errorHandler(
-  err: Error | AppError,
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void {
-  // Log the error
+/**
+ * Global error handling middleware
+ */
+export function errorHandler(err: Error, req: Request, res: Response, next: NextFunction): void {
   logger.error(err);
-  
-  // Handle custom AppError
+
+  // Handle AppError instances
   if (err instanceof AppError) {
     res.status(err.statusCode).json({
       status: 'error',
@@ -22,8 +17,8 @@ export function errorHandler(
     });
     return;
   }
-  
-  // Handle validation errors (Mongoose)
+
+  // Handle validation errors
   if (err.name === 'ValidationError') {
     res.status(400).json({
       status: 'error',
@@ -49,7 +44,10 @@ export function errorHandler(
   });
 }
 
-export function notFoundHandler(req: Request, res: Response): void {
+/**
+ * 404 Not Found handler
+ */
+export function notFoundHandler(req: Request, res: Response, next: NextFunction): void {
   res.status(404).json({
     status: 'error',
     message: `Route not found: ${req.originalUrl}`

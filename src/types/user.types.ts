@@ -1,4 +1,3 @@
-
 // 6. User Types: src/types/user.types.ts
 import { Document } from 'mongoose';
 
@@ -7,6 +6,9 @@ export interface IUser extends Document {
   email: string;
   password: string;
   isAdmin: boolean;
+  refreshToken?: string;
+  resetPasswordToken?: string;
+  resetPasswordExpires?: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -28,5 +30,24 @@ export interface AuthResponse {
     email: string;
     isAdmin: boolean;
   };
+  accessToken: string;
+  refreshToken: string;
+}
+
+export interface TokenPayload {
+  id: string;
+  type: 'access' | 'refresh';
+}
+
+export interface RefreshTokenDto {
+  refreshToken: string;
+}
+
+export interface ResetPasswordRequestDto {
+  email: string;
+}
+
+export interface ResetPasswordDto {
   token: string;
+  password: string;
 }

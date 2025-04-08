@@ -24,6 +24,18 @@ const userSchema = new Schema<IUser>({
     type: Boolean,
     default: false,
   },
+  refreshToken: {
+    type: String,
+    default: null,
+  },
+  resetPasswordToken: {
+    type: String,
+    default: null,
+  },
+  resetPasswordExpires: {
+    type: Date,
+    default: null,
+  },
 }, { timestamps: true });
 
 // Hash password before saving

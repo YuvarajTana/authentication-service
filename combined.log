@@ -1,0 +1,90 @@
+{"level":"info","message":"Connected to MongoDB","timestamp":"2025-04-08T14:43:59.433Z"}
+{"level":"info","message":"Connected to database","timestamp":"2025-04-08T14:43:59.435Z"}
+{"level":"info","message":"Middleware configured","timestamp":"2025-04-08T14:43:59.436Z"}
+{"level":"info","message":"Routes configured","timestamp":"2025-04-08T14:43:59.436Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-04-08T14:43:59.437Z"}
+{"level":"info","message":"API available at http://localhost:3000/api","timestamp":"2025-04-08T14:43:59.437Z"}
+{"level":"info","message":"Connected to MongoDB","timestamp":"2025-04-08T14:44:21.522Z"}
+{"level":"info","message":"Connected to database","timestamp":"2025-04-08T14:44:21.523Z"}
+{"level":"info","message":"Middleware configured","timestamp":"2025-04-08T14:44:21.524Z"}
+{"level":"info","message":"Routes configured","timestamp":"2025-04-08T14:44:21.524Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-04-08T14:44:21.525Z"}
+{"level":"info","message":"API available at http://localhost:3000/api","timestamp":"2025-04-08T14:44:21.525Z"}
+{"level":"info","message":"Connected to MongoDB","timestamp":"2025-04-08T14:44:53.993Z"}
+{"level":"info","message":"Connected to database","timestamp":"2025-04-08T14:44:53.994Z"}
+{"level":"info","message":"Middleware configured","timestamp":"2025-04-08T14:44:53.995Z"}
+{"level":"info","message":"Routes configured","timestamp":"2025-04-08T14:44:53.995Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-04-08T14:44:53.996Z"}
+{"level":"info","message":"API available at http://localhost:3000/api","timestamp":"2025-04-08T14:44:53.996Z"}
+{"level":"info","message":"Connected to MongoDB","timestamp":"2025-04-08T14:45:10.505Z"}
+{"level":"info","message":"Connected to database","timestamp":"2025-04-08T14:45:10.506Z"}
+{"level":"info","message":"Middleware configured","timestamp":"2025-04-08T14:45:10.507Z"}
+{"level":"info","message":"Routes configured","timestamp":"2025-04-08T14:45:10.507Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-04-08T14:45:10.508Z"}
+{"level":"info","message":"API available at http://localhost:3000/api","timestamp":"2025-04-08T14:45:10.508Z"}
+{"level":"info","message":"Connected to MongoDB","timestamp":"2025-04-08T14:45:50.840Z"}
+{"level":"info","message":"Connected to database","timestamp":"2025-04-08T14:45:50.841Z"}
+{"level":"info","message":"Middleware configured","timestamp":"2025-04-08T14:45:50.842Z"}
+{"level":"info","message":"Routes configured","timestamp":"2025-04-08T14:45:50.842Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-04-08T14:45:50.843Z"}
+{"level":"info","message":"API available at http://localhost:3000/api","timestamp":"2025-04-08T14:45:50.843Z"}
+{"level":"info","message":"Connected to MongoDB","timestamp":"2025-04-08T14:45:59.981Z"}
+{"level":"info","message":"Connected to database","timestamp":"2025-04-08T14:45:59.982Z"}
+{"level":"info","message":"Middleware configured","timestamp":"2025-04-08T14:45:59.984Z"}
+{"level":"info","message":"Routes configured","timestamp":"2025-04-08T14:45:59.984Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-04-08T14:45:59.985Z"}
+{"level":"info","message":"API available at http://localhost:3000/api","timestamp":"2025-04-08T14:45:59.985Z"}
+{"level":"info","message":"Connected to MongoDB","timestamp":"2025-04-08T14:46:15.717Z"}
+{"level":"info","message":"Connected to database","timestamp":"2025-04-08T14:46:15.719Z"}
+{"level":"info","message":"Middleware configured","timestamp":"2025-04-08T14:46:15.720Z"}
+{"level":"info","message":"Routes configured","timestamp":"2025-04-08T14:46:15.720Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-04-08T14:46:15.721Z"}
+{"level":"info","message":"API available at http://localhost:3000/api","timestamp":"2025-04-08T14:46:15.721Z"}
+{"level":"info","message":"Connected to MongoDB","timestamp":"2025-04-08T14:46:52.579Z"}
+{"level":"info","message":"Connected to database","timestamp":"2025-04-08T14:46:52.581Z"}
+{"level":"info","message":"Middleware configured","timestamp":"2025-04-08T14:46:52.582Z"}
+{"level":"info","message":"Routes configured","timestamp":"2025-04-08T14:46:52.582Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-04-08T14:46:52.583Z"}
+{"level":"info","message":"API available at http://localhost:3000/api","timestamp":"2025-04-08T14:46:52.583Z"}
+{"level":"info","message":"Connected to MongoDB","timestamp":"2025-04-08T14:47:04.635Z"}
+{"level":"info","message":"Connected to database","timestamp":"2025-04-08T14:47:04.636Z"}
+{"level":"info","message":"Middleware configured","timestamp":"2025-04-08T14:47:04.637Z"}
+{"level":"info","message":"Routes configured","timestamp":"2025-04-08T14:47:04.638Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-04-08T14:47:04.639Z"}
+{"level":"info","message":"API available at http://localhost:3000/api","timestamp":"2025-04-08T14:47:04.639Z"}
+{"level":"info","message":"Connected to MongoDB","timestamp":"2025-04-08T14:47:19.541Z"}
+{"level":"info","message":"Connected to database","timestamp":"2025-04-08T14:47:19.542Z"}
+{"level":"info","message":"Middleware configured","timestamp":"2025-04-08T14:47:19.543Z"}
+{"level":"info","message":"Routes configured","timestamp":"2025-04-08T14:47:19.544Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-04-08T14:47:19.545Z"}
+{"level":"info","message":"API available at http://localhost:3000/api","timestamp":"2025-04-08T14:47:19.545Z"}
+{"level":"info","message":"Connected to MongoDB","timestamp":"2025-04-08T14:47:24.517Z"}
+{"level":"info","message":"Connected to database","timestamp":"2025-04-08T14:47:24.518Z"}
+{"level":"info","message":"Middleware configured","timestamp":"2025-04-08T14:47:24.519Z"}
+{"level":"info","message":"Routes configured","timestamp":"2025-04-08T14:47:24.520Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-04-08T14:47:24.521Z"}
+{"level":"info","message":"API available at http://localhost:3000/api","timestamp":"2025-04-08T14:47:24.521Z"}
+{"level":"info","message":"Connected to MongoDB","timestamp":"2025-04-08T14:47:29.685Z"}
+{"level":"info","message":"Connected to database","timestamp":"2025-04-08T14:47:29.686Z"}
+{"level":"info","message":"Middleware configured","timestamp":"2025-04-08T14:47:29.688Z"}
+{"level":"info","message":"Routes configured","timestamp":"2025-04-08T14:47:29.688Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-04-08T14:47:29.689Z"}
+{"level":"info","message":"API available at http://localhost:3000/api","timestamp":"2025-04-08T14:47:29.689Z"}
+{"level":"info","message":"Connected to MongoDB","timestamp":"2025-04-08T14:47:33.888Z"}
+{"level":"info","message":"Connected to database","timestamp":"2025-04-08T14:47:33.889Z"}
+{"level":"info","message":"Middleware configured","timestamp":"2025-04-08T14:47:33.891Z"}
+{"level":"info","message":"Routes configured","timestamp":"2025-04-08T14:47:33.891Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-04-08T14:47:33.892Z"}
+{"level":"info","message":"API available at http://localhost:3000/api","timestamp":"2025-04-08T14:47:33.892Z"}
+{"level":"info","message":"Connected to MongoDB","timestamp":"2025-04-08T14:47:41.463Z"}
+{"level":"info","message":"Connected to database","timestamp":"2025-04-08T14:47:41.464Z"}
+{"level":"info","message":"Middleware configured","timestamp":"2025-04-08T14:47:41.466Z"}
+{"level":"info","message":"Routes configured","timestamp":"2025-04-08T14:47:41.466Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-04-08T14:47:41.467Z"}
+{"level":"info","message":"API available at http://localhost:3000/api","timestamp":"2025-04-08T14:47:41.467Z"}
+{"level":"info","message":"Connected to MongoDB","timestamp":"2025-04-08T14:48:05.763Z"}
+{"level":"info","message":"Connected to database","timestamp":"2025-04-08T14:48:05.765Z"}
+{"level":"info","message":"Middleware configured","timestamp":"2025-04-08T14:48:05.766Z"}
+{"level":"info","message":"Routes configured","timestamp":"2025-04-08T14:48:05.766Z"}
+{"level":"info","message":"Server running on port 3000","timestamp":"2025-04-08T14:48:05.767Z"}
+{"level":"info","message":"API available at http://localhost:3000/api","timestamp":"2025-04-08T14:48:05.767Z"}
