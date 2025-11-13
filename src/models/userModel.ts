@@ -36,6 +36,60 @@ const userSchema = new Schema<IUser>({
     type: Date,
     default: null,
   },
+  // Email verification fields
+  emailVerified: {
+    type: Boolean,
+    default: false,
+  },
+  emailVerificationToken: {
+    type: String,
+    default: null,
+  },
+  emailVerificationExpires: {
+    type: Date,
+    default: null,
+  },
+  // Account security fields
+  failedLoginAttempts: {
+    type: Number,
+    default: 0,
+  },
+  accountLockedUntil: {
+    type: Date,
+    default: null,
+  },
+  lastLoginAttempt: {
+    type: Date,
+    default: null,
+  },
+  lastLoginAt: {
+    type: Date,
+    default: null,
+  },
+  lastLoginIp: {
+    type: String,
+    default: null,
+  },
+  // Password security
+  passwordChangedAt: {
+    type: Date,
+    default: null,
+  },
+  passwordHistory: [{
+    hash: String,
+    changedAt: Date,
+  }],
+  // User metadata
+  publicMetadata: {
+    type: Map,
+    of: Schema.Types.Mixed,
+    default: {},
+  },
+  privateMetadata: {
+    type: Map,
+    of: Schema.Types.Mixed,
+    default: {},
+  },
 }, { timestamps: true });
 
 // Hash password before saving

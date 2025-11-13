@@ -17,13 +17,29 @@ Utils: Provide helper functions
 
 ### Features Included:
 
-User authentication with JWT
-MongoDB integration with Mongoose
-Error handling middleware
-Request validation
-Logging with Winston
-Security headers with Helmet
-API rate limiting
+**Authentication & Security:**
+- User authentication with JWT (access & refresh tokens)
+- Email verification system with secure tokens
+- Account lockout & brute force protection (5 attempts / 30 min)
+- Advanced password policies (complexity, history, no reuse)
+- Password reset with email verification
+- IP tracking and security logging
+
+**User Management:**
+- User registration and login
+- Email verification workflow
+- Password management with history
+- Flexible user metadata (public/private)
+- Role-based access control (RBAC)
+
+**Technical Features:**
+- MongoDB integration with Mongoose
+- Comprehensive error handling middleware
+- Request validation (Zod schemas)
+- Email service with HTML templates
+- Logging with Winston
+- Security headers with Helmet
+- API rate limiting with Redis
 
 
 ### Development Setup:
@@ -120,9 +136,9 @@ FRONTEND_URL=http://localhost:3000
 # REDIS_URL=redis://localhost:6379
 
 // 3. Create initial admin user (optional)
-// Add admin credentials to your .env file
+// Add admin credentials to your .env file (must meet password requirements)
 ADMIN_EMAIL=admin@example.com
-ADMIN_PASSWORD=SecureAdminPass123!
+ADMIN_PASSWORD=SecureAdmin123!@#
 ADMIN_NAME=Admin User
 
 // Then run the admin creation script
@@ -138,24 +154,77 @@ $ npm run dev
 // Production mode
 $ npm start
 
+// ----- NEW FEATURES OVERVIEW -----
+
+// This authentication service now includes enterprise-grade features:
+
+// 1. Email Verification System
+//    - Users receive verification emails upon registration
+//    - Secure token-based verification (24-hour validity)
+//    - Resend verification email option
+//    - Welcome email after successful verification
+
+// 2. Account Lockout Protection
+//    - 5 failed login attempts = 30-minute lockout
+//    - Email notifications on lockout
+//    - Automatic unlock after timeout
+//    - IP address tracking
+
+// 3. Advanced Password Policies
+//    - Minimum 8 characters
+//    - Must include: uppercase, lowercase, number, special character
+//    - Prevents common/weak passwords
+//    - Tracks password history (last 5)
+//    - Prevents password reuse
+
+// 4. User Metadata System
+//    - Flexible public/private metadata fields
+//    - No schema changes needed for new features
+//    - Type-safe using TypeScript Maps
+
+// For complete details, see IMPROVEMENTS.md
+
+// ----- NEW API ENDPOINTS -----
+
+// Email Verification
+POST /api/auth/verify-email          # Verify email with token
+POST /api/auth/resend-verification   # Resend verification email
+GET /api/auth/check-verification     # Check verification status (requires auth)
+
 // ----- TESTING THE AUTHENTICATION FLOW -----
 
 // Here's a step-by-step guide to test the authentication flow with curl.
 // You can copy and paste these commands in your terminal.
 
-// 1. Register a new user
+// 1. Register a new user (note: now requires strong password with special character)
 $ curl -X POST http://localhost:3000/api/auth/register \
   -H "Content-Type: application/json" \
-  -d '{"name":"Test User","email":"user@example.com","password":"Password123","passwordConfirmation":"Password123"}' \
+  -d '{"name":"Test User","email":"user@example.com","password":"Password123!","passwordConfirmation":"Password123!"}' \
   -c cookies.txt \
+  -v
+
+// Note: You'll receive a verification email. Check your email service (Mailtrap) for the token.
+
+// 1b. Verify email (get token from email)
+$ curl -X POST http://localhost:3000/api/auth/verify-email \
+  -H "Content-Type: application/json" \
+  -d '{"token":"YOUR_VERIFICATION_TOKEN"}' \
+  -v
+
+// 1c. Resend verification email if needed
+$ curl -X POST http://localhost:3000/api/auth/resend-verification \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@example.com"}' \
   -v
 
 // 2. Login with the newly created user
 $ curl -X POST http://localhost:3000/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"user@example.com","password":"Password123"}' \
+  -d '{"email":"user@example.com","password":"Password123!"}' \
   -c cookies.txt \
   -v
+
+// Note: After 5 failed login attempts, account will be locked for 30 minutes
 
 // 3. Store the access token
 // Extract the access token from the previous response and store it in a variable
@@ -188,7 +257,7 @@ $ curl -X POST http://localhost:3000/api/auth/logout \
 // First login as admin
 $ curl -X POST http://localhost:3000/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@example.com","password":"SecureAdminPass123!"}' \
+  -d '{"email":"admin@example.com","password":"SecureAdmin123!@#"}' \
   -c admin_cookies.txt
 
 // Store the admin access token

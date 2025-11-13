@@ -1,13 +1,16 @@
 // src/routes/authRoutes.ts
 import { Router } from 'express';
-import { 
-  register, 
-  login, 
-  refreshToken, 
+import {
+  register,
+  login,
+  refreshToken,
   logout,
   requestPasswordReset,
   resetPassword,
-  getCurrentUser
+  getCurrentUser,
+  verifyEmail,
+  resendVerificationEmail,
+  checkEmailVerification
 } from '../controllers/authController';
 import { authenticate } from '../middleware/auth';
 import { validateRequest } from '../middleware/zodValidation';
@@ -93,9 +96,40 @@ router.post(
  * @access  Private
  */
 router.get(
-  '/me', 
-  authenticate, 
+  '/me',
+  authenticate,
   getCurrentUser
+);
+
+/**
+ * @route   POST /api/auth/verify-email
+ * @desc    Verify email with token
+ * @access  Public
+ */
+router.post(
+  '/verify-email',
+  verifyEmail
+);
+
+/**
+ * @route   POST /api/auth/resend-verification
+ * @desc    Resend email verification
+ * @access  Public
+ */
+router.post(
+  '/resend-verification',
+  resendVerificationEmail
+);
+
+/**
+ * @route   GET /api/auth/check-verification
+ * @desc    Check if user's email is verified
+ * @access  Private
+ */
+router.get(
+  '/check-verification',
+  authenticate,
+  checkEmailVerification
 );
 
 export default router;

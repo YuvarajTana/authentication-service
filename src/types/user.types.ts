@@ -9,6 +9,22 @@ export interface IUser extends Document {
   refreshToken?: string;
   resetPasswordToken?: string;
   resetPasswordExpires?: Date;
+  // Email verification
+  emailVerified: boolean;
+  emailVerificationToken?: string;
+  emailVerificationExpires?: Date;
+  // Account security
+  failedLoginAttempts: number;
+  accountLockedUntil?: Date;
+  lastLoginAttempt?: Date;
+  lastLoginAt?: Date;
+  lastLoginIp?: string;
+  // Password security
+  passwordChangedAt?: Date;
+  passwordHistory?: Array<{ hash: string; changedAt: Date }>;
+  // User metadata
+  publicMetadata?: Map<string, any>;
+  privateMetadata?: Map<string, any>;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 

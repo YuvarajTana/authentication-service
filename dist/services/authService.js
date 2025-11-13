@@ -18,6 +18,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const crypto_1 = __importDefault(require("crypto"));
 const userModel_1 = __importDefault(require("../models/userModel"));
 const errorHandler_1 = require("../utils/errorHandler");
+const logger_1 = __importDefault(require("../utils/logger"));
 /**
  * Service dedicated to authentication, token management, and authorization
  */
@@ -180,6 +181,59 @@ class AuthService {
                 roles.push('admin');
             }
             return roles;
+        });
+    }
+    /**
+     * Generate email verification token
+     */
+    generateEmailVerificationToken() {
+        const token = crypto_1.default.randomBytes(32).toString('hex');
+        const hash = crypto_1.default.createHash('sha256').update(token).digest('hex');
+        return { token, hash };
+    }
+    /**
+     * Set email verification token for user
+     */
+    setEmailVerificationToken(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield userModel_1.default.findById(userId);
+            if (!user) {
+                throw new errorHandler_1.AppError('User not found', 404);
+            }
+            const { token, hash } = this.generateEmailVerificationToken();
+            user.emailVerificationToken = hash;
+            user.emailVerificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+            yield user.save();
+            return token;
+        });
+    }
+    /**
+     * Verify email with token
+     */
+    verifyEmail(token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const hash = crypto_1.default.createHash('sha256').update(token).digest('hex');
+            const user = yield userModel_1.default.findOne({
+                emailVerificationToken: hash,
+                emailVerificationExpires: { $gt: Date.now() }
+            });
+            if (!user) {
+                throw new errorHandler_1.AppError('Email verification token is invalid or has expired', 400);
+            }
+            user.emailVerified = true;
+            user.emailVerificationToken = undefined;
+            user.emailVerificationExpires = undefined;
+            yield user.save();
+            logger_1.default.info(`Email verified for user: ${user.email}`);
+        });
+    }
+    /**
+     * Check if user's email is verified
+     */
+    isEmailVerified(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield userModel_1.default.findById(userId);
+            return (user === null || user === void 0 ? void 0 : user.emailVerified) || false;
         });
     }
 }

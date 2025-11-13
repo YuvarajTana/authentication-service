@@ -178,18 +178,78 @@ export class AuthService {
    */
   async getUserRoles(userId: string): Promise<string[]> {
     const user = await User.findById(userId);
-    
+
     if (!user) {
       return [];
     }
-    
+
     const roles = ['user'];
-    
+
     if (user.isAdmin) {
       roles.push('admin');
     }
-    
+
     return roles;
+  }
+
+  /**
+   * Generate email verification token
+   */
+  generateEmailVerificationToken(): { token: string, hash: string } {
+    const token = crypto.randomBytes(32).toString('hex');
+    const hash = crypto.createHash('sha256').update(token).digest('hex');
+
+    return { token, hash };
+  }
+
+  /**
+   * Set email verification token for user
+   */
+  async setEmailVerificationToken(userId: string): Promise<string> {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      throw new AppError('User not found', 404);
+    }
+
+    const { token, hash } = this.generateEmailVerificationToken();
+
+    user.emailVerificationToken = hash;
+    user.emailVerificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+    await user.save();
+
+    return token;
+  }
+
+  /**
+   * Verify email with token
+   */
+  async verifyEmail(token: string): Promise<void> {
+    const hash = crypto.createHash('sha256').update(token).digest('hex');
+
+    const user = await User.findOne({
+      emailVerificationToken: hash,
+      emailVerificationExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      throw new AppError('Email verification token is invalid or has expired', 400);
+    }
+
+    user.emailVerified = true;
+    user.emailVerificationToken = undefined;
+    user.emailVerificationExpires = undefined;
+    await user.save();
+
+    logger.info(`Email verified for user: ${user.email}`);
+  }
+
+  /**
+   * Check if user's email is verified
+   */
+  async isEmailVerified(userId: string): Promise<boolean> {
+    const user = await User.findById(userId);
+    return user?.emailVerified || false;
   }
 }
 
