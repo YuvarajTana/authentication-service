@@ -1,316 +1,426 @@
-## Project Organization:
+# Authentication Service
 
-/src: Main source code
-Separate directories for controllers, models, routes, services, etc.
+Enterprise-grade authentication and authorization service built with Node.js, TypeScript, and Express. This service provides secure user authentication, role-based access control, and comprehensive security features.
 
+## Features
 
-### Key Components:
+### Authentication & Security
+- **JWT Authentication**: Access and refresh token system
+- **Email Verification**: Secure token-based email verification with 24-hour validity
+- **Account Lockout Protection**: Brute force protection (5 failed attempts = 30-minute lockout)
+- **Advanced Password Policies**:
+  - Minimum 8 characters with complexity requirements
+  - Password history tracking (prevents reuse of last 5 passwords)
+  - Common/weak password detection
+- **Password Reset**: Secure email-based password recovery
+- **IP Tracking**: Security logging and monitoring
 
-Controllers: Handle HTTP requests and responses
-Services: Contain business logic
-Models: Define data schemas
-Routes: Map endpoints to controllers
-Middleware: Handle authentication, validation, error handling
-Config: Manage application configuration
-Utils: Provide helper functions
-
-
-### Features Included:
-
-**Authentication & Security:**
-- User authentication with JWT (access & refresh tokens)
-- Email verification system with secure tokens
-- Account lockout & brute force protection (5 attempts / 30 min)
-- Advanced password policies (complexity, history, no reuse)
-- Password reset with email verification
-- IP tracking and security logging
-
-**User Management:**
+### User Management
 - User registration and login
-- Email verification workflow
-- Password management with history
-- Flexible user metadata (public/private)
+- Email verification workflow with resend capability
 - Role-based access control (RBAC)
+- Flexible user metadata (public/private fields)
+- Profile management
 
-**Technical Features:**
-- MongoDB integration with Mongoose
-- Comprehensive error handling middleware
-- Request validation (Zod schemas)
-- Email service with HTML templates
-- Logging with Winston
-- Security headers with Helmet
-- API rate limiting with Redis
+### Technical Features
+- **Database**: MongoDB with Mongoose ODM
+- **Validation**: Zod schemas for request validation
+- **Email Service**: HTML email templates with Nodemailer
+- **Logging**: Structured logging with Winston
+- **Security Headers**: Helmet.js integration
+- **Rate Limiting**: Redis-based API rate limiting
+- **Error Handling**: Comprehensive error middleware
+- **TypeScript**: Full type safety
 
+## Tech Stack
 
-### Development Setup:
+- **Runtime**: Node.js
+- **Language**: TypeScript
+- **Framework**: Express.js
+- **Database**: MongoDB
+- **Cache**: Redis (optional, for rate limiting)
+- **Authentication**: JWT (jsonwebtoken)
+- **Validation**: Zod
+- **Email**: Nodemailer
+- **Logging**: Winston
+- **Security**: Helmet, bcrypt
 
-TypeScript configuration
-NPM scripts for development and production
-ESLint for code quality
+## Prerequisites
 
+- Node.js (v14 or higher)
+- MongoDB (v4.4 or higher)
+- Redis (optional, for rate limiting)
+- SMTP server or email service (e.g., Mailtrap, SendGrid)
 
+## Installation
 
-The structure is modular and scalable, making it easy to add new features or modify existing ones. You can explore the code examples to understand how each component works and how they interact with each other.
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd authentication-service
+   ```
 
-### Project Structure
-``` JavaScript
- * /
- * ├── src/
- * │   ├── config/
- * │   │   ├── db.ts                  # Database configuration
- * │   │   ├── middleware.ts          # Express middleware setup
- * │   │   └── app.ts                 # Express app configuration
- * │   ├── controllers/
- * │   │   ├── userController.ts      # User-related route handlers
- * │   │   └── productController.ts   # Product-related route handlers
- * │   ├── models/
- * │   │   ├── userModel.ts           # User model definition
- * │   │   └── productModel.ts        # Product model definition
- * │   ├── routes/
- * │   │   ├── userRoutes.ts          # User-related routes
- * │   │   └── productRoutes.ts       # Product-related routes
- * │   ├── services/
- * │   │   ├── userService.ts         # User business logic
- * │   │   └── productService.ts      # Product business logic
- * │   ├── utils/
- * │   │   ├── logger.ts              # Logging utility
- * │   │   ├── errorHandler.ts        # Error handling utility
- * │   │   └── validation.ts          # Input validation utilities
- * │   ├── types/
- * │   │   ├── user.types.ts          # User-related type definitions
- * │   │   └── product.types.ts       # Product-related type definitions
- * │   ├── middleware/
- * │   │   ├── auth.ts                # Authentication middleware
- * │   │   ├── errorMiddleware.ts     # Error handling middleware
- * │   │   └── validation.ts          # Validation middleware
- * │   └── server.ts                  # Entry point for the application
- * ├── .env                           # Environment variables
- * ├── .env.example                   # Example environment variables
- * ├── .gitignore                     # Git ignore file
- * ├── tsconfig.json                  # TypeScript configuration
- * ├── package.json                   # Project dependencies and scripts
- * └── README.md                      # Project documentation
- 
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+
+   Create a `.env` file in the project root:
+   ```env
+   # Server Configuration
+   PORT=3000
+   NODE_ENV=development
+
+   # Database
+   MONGODB_URI=mongodb://localhost:27017/auth-service
+
+   # JWT Configuration
+   ACCESS_TOKEN_SECRET=your-secure-access-token-secret-key-change-this
+   REFRESH_TOKEN_SECRET=your-secure-refresh-token-secret-key-change-this
+   ACCESS_TOKEN_EXPIRY=15m
+   REFRESH_TOKEN_EXPIRY=7d
+
+   # Email Service
+   EMAIL_HOST=smtp.mailtrap.io
+   EMAIL_PORT=2525
+   EMAIL_USER=your-mailtrap-user
+   EMAIL_PASS=your-mailtrap-password
+   EMAIL_FROM=noreply@example.com
+
+   # Frontend URL (for CORS and email links)
+   FRONTEND_URL=http://localhost:3000
+
+   # Redis (Optional - for rate limiting)
+   REDIS_URL=redis://localhost:6379
+
+   # Logging
+   LOG_LEVEL=info
+
+   # Admin User (Optional - for initial setup)
+   ADMIN_EMAIL=admin@example.com
+   ADMIN_PASSWORD=SecureAdmin123!@#
+   ADMIN_NAME=Admin User
+   ```
+
+4. **Build the application**
+   ```bash
+   npm run build
+   ```
+
+5. **Create admin user (optional)**
+   ```bash
+   npx ts-node src/scripts/createAdminUser.ts
+   ```
+
+## Running the Application
+
+### Development Mode
+```bash
+npm run dev
 ```
 
-// RUNNING THE API WITH AUTHENTICATION & AUTHORIZATION
-// ====================================================
+### Production Mode
+```bash
+npm start
+```
 
-/*
-This guide provides instructions on how to run the Node.js REST API with authentication
-and authorization features. The guide covers initial setup, environment configuration,
-starting the server, and testing the authentication flow.
-*/
+The server will start on the port specified in your `.env` file (default: 3000).
 
-// ----- SETUP INSTRUCTIONS -----
+## API Endpoints
 
-// 1. Install dependencies
-// Run this in your project root directory
-$ npm install
+### Authentication Routes
 
-// 2. Set up environment variables
-// Create a .env file in the project root with the following content:
-PORT=3000
-NODE_ENV=development
+#### Register User
+```http
+POST /api/auth/register
+Content-Type: application/json
 
-# Database
-MONGODB_URI=mongodb://localhost:27017/api
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "SecurePass123!",
+  "passwordConfirmation": "SecurePass123!"
+}
+```
 
-# JWT Settings
-ACCESS_TOKEN_SECRET=your-secure-access-token-secret-key
-REFRESH_TOKEN_SECRET=your-secure-refresh-token-secret-key
-ACCESS_TOKEN_EXPIRY=15m
-REFRESH_TOKEN_EXPIRY=7d
+#### Verify Email
+```http
+POST /api/auth/verify-email
+Content-Type: application/json
 
-# Email Service (for password reset)
-EMAIL_HOST=smtp.mailtrap.io
-EMAIL_PORT=2525
-EMAIL_USER=your-mailtrap-user
-EMAIL_PASS=your-mailtrap-password
-EMAIL_FROM=noreply@example.com
+{
+  "token": "verification-token-from-email"
+}
+```
 
-# Frontend URL (for CORS and email reset links)
-FRONTEND_URL=http://localhost:3000
+#### Resend Verification Email
+```http
+POST /api/auth/resend-verification
+Content-Type: application/json
 
-# Optional Redis for rate limiting
-# REDIS_URL=redis://localhost:6379
+{
+  "email": "john@example.com"
+}
+```
 
-// 3. Create initial admin user (optional)
-// Add admin credentials to your .env file (must meet password requirements)
-ADMIN_EMAIL=admin@example.com
-ADMIN_PASSWORD=SecureAdmin123!@#
-ADMIN_NAME=Admin User
+#### Login
+```http
+POST /api/auth/login
+Content-Type: application/json
 
-// Then run the admin creation script
-$ npx ts-node src/scripts/createAdminUser.ts
+{
+  "email": "john@example.com",
+  "password": "SecurePass123!"
+}
+```
 
-// 4. Build the application
-$ npm run build
+#### Get Current User
+```http
+GET /api/auth/me
+Authorization: Bearer <access-token>
+```
 
-// 5. Start the server
-// Development mode with auto-reload
-$ npm run dev
+#### Refresh Token
+```http
+POST /api/auth/refresh-token
+Cookie: refreshToken=<refresh-token>
+```
 
-// Production mode
-$ npm start
+#### Logout
+```http
+POST /api/auth/logout
+Authorization: Bearer <access-token>
+```
 
-// ----- NEW FEATURES OVERVIEW -----
+#### Request Password Reset
+```http
+POST /api/auth/forgot-password
+Content-Type: application/json
 
-// This authentication service now includes enterprise-grade features:
+{
+  "email": "john@example.com"
+}
+```
 
-// 1. Email Verification System
-//    - Users receive verification emails upon registration
-//    - Secure token-based verification (24-hour validity)
-//    - Resend verification email option
-//    - Welcome email after successful verification
+#### Reset Password
+```http
+POST /api/auth/reset-password
+Content-Type: application/json
 
-// 2. Account Lockout Protection
-//    - 5 failed login attempts = 30-minute lockout
-//    - Email notifications on lockout
-//    - Automatic unlock after timeout
-//    - IP address tracking
+{
+  "token": "reset-token-from-email",
+  "password": "NewSecurePass123!",
+  "passwordConfirmation": "NewSecurePass123!"
+}
+```
 
-// 3. Advanced Password Policies
-//    - Minimum 8 characters
-//    - Must include: uppercase, lowercase, number, special character
-//    - Prevents common/weak passwords
-//    - Tracks password history (last 5)
-//    - Prevents password reuse
+### Protected Routes Example
 
-// 4. User Metadata System
-//    - Flexible public/private metadata fields
-//    - No schema changes needed for new features
-//    - Type-safe using TypeScript Maps
+#### Get All Users (Admin Only)
+```http
+GET /api/admin/users
+Authorization: Bearer <admin-access-token>
+```
 
-// For complete details, see IMPROVEMENTS.md
+## Project Structure
 
-// ----- NEW API ENDPOINTS -----
+```
+authentication-service/
+├── src/
+│   ├── config/
+│   │   ├── app.ts              # Express app configuration
+│   │   ├── db.ts               # Database connection
+│   │   └── middleware.ts       # Middleware setup
+│   ├── controllers/
+│   │   ├── authController.ts   # Authentication handlers
+│   │   ├── userController.ts   # User management handlers
+│   │   └── productController.ts
+│   ├── middleware/
+│   │   ├── auth.ts             # JWT authentication middleware
+│   │   ├── rbac.ts             # Role-based access control
+│   │   ├── errorMiddleware.ts  # Error handling
+│   │   ├── validation.ts       # Request validation
+│   │   ├── zodValidation.ts    # Zod schema validation
+│   │   └── rateLimiter.ts      # Rate limiting
+│   ├── models/
+│   │   └── userModel.ts        # User schema and model
+│   ├── routes/
+│   │   ├── authRoutes.ts       # Authentication routes
+│   │   ├── userRoutes.ts       # User routes
+│   │   └── productRoutes.ts    # Product routes
+│   ├── schemas/
+│   │   ├── userSchemas.ts      # User validation schemas
+│   │   └── productSchemas.ts   # Product validation schemas
+│   ├── services/
+│   │   ├── authService.ts      # Authentication business logic
+│   │   ├── userService.ts      # User business logic
+│   │   ├── emailService.ts     # Email sending service
+│   │   └── securityService.ts  # Security utilities
+│   ├── types/
+│   │   └── user.types.ts       # TypeScript type definitions
+│   ├── utils/
+│   │   ├── errorHandler.ts     # Error handling utilities
+│   │   └── logger.ts           # Winston logger setup
+│   ├── scripts/
+│   │   └── createAdminUser.ts  # Admin user creation script
+│   └── server.ts               # Application entry point
+├── dist/                       # Compiled JavaScript output
+├── .env                        # Environment variables
+├── .env.example                # Example environment file
+├── .gitignore
+├── package.json
+├── tsconfig.json               # TypeScript configuration
+└── README.md
+```
 
-// Email Verification
-POST /api/auth/verify-email          # Verify email with token
-POST /api/auth/resend-verification   # Resend verification email
-GET /api/auth/check-verification     # Check verification status (requires auth)
+## Security Features
 
-// ----- TESTING THE AUTHENTICATION FLOW -----
+### Password Requirements
+- Minimum 8 characters
+- At least one uppercase letter
+- At least one lowercase letter
+- At least one number
+- At least one special character
+- Cannot be a common/weak password
+- Cannot reuse last 5 passwords
 
-// Here's a step-by-step guide to test the authentication flow with curl.
-// You can copy and paste these commands in your terminal.
+### Account Lockout
+- Maximum 5 failed login attempts
+- 30-minute lockout period
+- Email notification on lockout
+- IP address tracking
+- Automatic unlock after timeout
 
-// 1. Register a new user (note: now requires strong password with special character)
-$ curl -X POST http://localhost:3000/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"name":"Test User","email":"user@example.com","password":"Password123!","passwordConfirmation":"Password123!"}' \
-  -c cookies.txt \
-  -v
+### Token Security
+- Short-lived access tokens (15 minutes)
+- Long-lived refresh tokens (7 days)
+- Secure HTTP-only cookies for refresh tokens
+- Token rotation on refresh
+- Blacklist support for logout
 
-// Note: You'll receive a verification email. Check your email service (Mailtrap) for the token.
+### Email Verification
+- Secure random token generation
+- 24-hour token validity
+- Resend capability with rate limiting
+- Welcome email after verification
 
-// 1b. Verify email (get token from email)
-$ curl -X POST http://localhost:3000/api/auth/verify-email \
-  -H "Content-Type: application/json" \
-  -d '{"token":"YOUR_VERIFICATION_TOKEN"}' \
-  -v
+## Testing the API
 
-// 1c. Resend verification email if needed
-$ curl -X POST http://localhost:3000/api/auth/resend-verification \
-  -H "Content-Type: application/json" \
-  -d '{"email":"user@example.com"}' \
-  -v
+### Using cURL
 
-// 2. Login with the newly created user
-$ curl -X POST http://localhost:3000/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"user@example.com","password":"Password123!"}' \
-  -c cookies.txt \
-  -v
+1. **Register a new user**
+   ```bash
+   curl -X POST http://localhost:3000/api/auth/register \
+     -H "Content-Type: application/json" \
+     -d '{"name":"Test User","email":"test@example.com","password":"Password123!","passwordConfirmation":"Password123!"}' \
+     -c cookies.txt -v
+   ```
 
-// Note: After 5 failed login attempts, account will be locked for 30 minutes
+2. **Verify email** (use token from email)
+   ```bash
+   curl -X POST http://localhost:3000/api/auth/verify-email \
+     -H "Content-Type: application/json" \
+     -d '{"token":"YOUR_VERIFICATION_TOKEN"}' -v
+   ```
 
-// 3. Store the access token
-// Extract the access token from the previous response and store it in a variable
-// Replace YOUR_ACCESS_TOKEN with the actual token from the response
-$ ACCESS_TOKEN=YOUR_ACCESS_TOKEN
+3. **Login**
+   ```bash
+   curl -X POST http://localhost:3000/api/auth/login \
+     -H "Content-Type: application/json" \
+     -d '{"email":"test@example.com","password":"Password123!"}' \
+     -c cookies.txt -v
+   ```
 
-// 4. Access a protected route
-$ curl -X GET http://localhost:3000/api/auth/me \
-  -H "Authorization: Bearer $ACCESS_TOKEN" \
-  -b cookies.txt \
-  -v
+4. **Access protected route**
+   ```bash
+   curl -X GET http://localhost:3000/api/auth/me \
+     -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+     -b cookies.txt -v
+   ```
 
-// 5. Refresh your access token
-$ curl -X POST http://localhost:3000/api/auth/refresh-token \
-  -b cookies.txt \
-  -c cookies.txt \
-  -v
+### Using Postman
 
-// Store the new access token
-$ ACCESS_TOKEN=YOUR_NEW_ACCESS_TOKEN
+1. Import the API endpoints into Postman
+2. Set up environment variables for `baseUrl` and `accessToken`
+3. Use the authentication endpoints to get tokens
+4. Test protected routes with the Bearer token
 
-// 6. Logout
-$ curl -X POST http://localhost:3000/api/auth/logout \
-  -H "Authorization: Bearer $ACCESS_TOKEN" \
-  -b cookies.txt \
-  -v
+## Troubleshooting
 
-// ----- TESTING ROLE-BASED ACCESS CONTROL -----
+### MongoDB Connection Issues
+- Ensure MongoDB is running: `mongosh` or `mongo`
+- Verify `MONGODB_URI` in `.env`
+- Check network connectivity and firewall settings
 
-// First login as admin
-$ curl -X POST http://localhost:3000/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"admin@example.com","password":"SecureAdmin123!@#"}' \
-  -c admin_cookies.txt
+### JWT Token Issues
+- Verify `ACCESS_TOKEN_SECRET` and `REFRESH_TOKEN_SECRET` are set
+- Check token expiry settings
+- Ensure Authorization header format: `Bearer <token>`
 
-// Store the admin access token
-$ ADMIN_TOKEN=YOUR_ADMIN_TOKEN
+### Email Not Sending
+- Verify SMTP credentials in `.env`
+- Check email service logs
+- Test with a service like Mailtrap for development
 
-// Try to access an admin-only route
-$ curl -X GET http://localhost:3000/api/admin/users \
-  -H "Authorization: Bearer $ADMIN_TOKEN" \
-  -b admin_cookies.txt
+### Rate Limiting Issues
+- Ensure Redis is running if using Redis-based rate limiting
+- Check `REDIS_URL` configuration
+- Adjust rate limit settings in middleware
 
-// Try the same with a regular user token
-$ curl -X GET http://localhost:3000/api/admin/users \
-  -H "Authorization: Bearer $ACCESS_TOKEN" \
-  -b cookies.txt
+### Common Error Codes
+- `400` - Bad Request (validation error)
+- `401` - Unauthorized (invalid/missing token)
+- `403` - Forbidden (insufficient permissions)
+- `404` - Not Found
+- `429` - Too Many Requests (rate limit exceeded)
+- `500` - Internal Server Error
 
-// ----- COMMON ISSUES & TROUBLESHOOTING -----
+## Development
 
-// 1. MongoDB Connection Issues
-// - Make sure MongoDB is running
-// - Check the MONGODB_URI in .env
-// - Try connecting manually with MongoDB CLI
+### Code Quality
+```bash
+# Run linter
+npm run lint
 
-// 2. JWT Token Issues
-// - Ensure ACCESS_TOKEN_SECRET and REFRESH_TOKEN_SECRET are set
-// - Check token expiry times
-// - Verify that authorization header format is: "Bearer <token>"
+# Run tests
+npm test
 
-// 3. Rate Limiting Issues
-// - If using Redis, ensure Redis server is running
-// - If rate limit is exceeded, wait for the time window to reset
+# Build TypeScript
+npm run build
+```
 
-// 4. CORS Issues
-// - Check FRONTEND_URL in .env matches your frontend application
-// - Ensure credentials: true is set in your frontend fetch/axios calls
+### Adding New Features
 
-// For authentication debugging, enable verbose logging in .env:
-LOG_LEVEL=debug
+1. **New Routes**: Add to appropriate route file in `src/routes/`
+2. **Controllers**: Add handlers in `src/controllers/`
+3. **Services**: Add business logic in `src/services/`
+4. **Models**: Define schemas in `src/models/`
+5. **Validation**: Add schemas in `src/schemas/`
+6. **Middleware**: Add custom middleware in `src/middleware/`
 
-// ----- EXTENDING THE AUTHENTICATION SYSTEM -----
+## Future Enhancements
 
-// 1. Adding Social Login (e.g., Google OAuth)
-// - Install passport and passport-google-oauth20
-// - Create a new service for social authentication
-// - Add routes for OAuth callbacks
-// - Integrate with the existing token system
+- [ ] Social authentication (Google, GitHub, etc.)
+- [ ] Two-factor authentication (2FA)
+- [ ] OAuth2 server capabilities
+- [ ] API documentation with Swagger/OpenAPI
+- [ ] Comprehensive test suite
+- [ ] Docker containerization
+- [ ] CI/CD pipeline
+- [ ] Session management
+- [ ] Audit logging
+- [ ] Advanced RBAC with permissions
 
-// 2. Implementing Two-Factor Authentication
-// - Install a 2FA library like speakeasy
-// - Add a 2FA field to the User model
-// - Create routes for enabling/disabling 2FA
-// - Update the authentication flow to check for 2FA
+## License
 
-// 3. Adding Role-Based API Documentation
-// - Use Swagger with security definitions
-// - Document required roles for each endpoint
-// - Add authorization scopes for OAuth
+ISC
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## Support
+
+For issues and questions, please open an issue in the repository.
