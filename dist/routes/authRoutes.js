@@ -53,6 +53,24 @@ router.post('/reset-password', (0, zodValidation_1.validateRequest)(userSchemas_
  * @access  Private
  */
 router.get('/me', auth_1.authenticate, authController_1.getCurrentUser);
+/**
+ * @route   POST /api/auth/verify-email
+ * @desc    Verify email with token
+ * @access  Public
+ */
+router.post('/verify-email', authController_1.verifyEmail);
+/**
+ * @route   POST /api/auth/resend-verification
+ * @desc    Resend email verification
+ * @access  Public
+ */
+router.post('/resend-verification', authController_1.resendVerificationEmail);
+/**
+ * @route   GET /api/auth/check-verification
+ * @desc    Check if user's email is verified
+ * @access  Private
+ */
+router.get('/check-verification', auth_1.authenticate, authController_1.checkEmailVerification);
 exports.default = router;
 const authRoutes_1 = __importDefault(require("../routes/authRoutes"));
 const userRoutes_1 = __importDefault(require("../routes/userRoutes"));

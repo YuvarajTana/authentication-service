@@ -18,7 +18,10 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const crypto_1 = __importDefault(require("crypto"));
 const userModel_1 = __importDefault(require("../models/userModel"));
 const errorHandler_1 = require("../utils/errorHandler");
-// import { sendPasswordResetEmail } from '../utils/emailService'; Todo
+const emailService_1 = require("./emailService");
+const securityService_1 = require("./securityService");
+const authService_1 = require("./authService");
+const logger_1 = __importDefault(require("../utils/logger"));
 class UserService {
     constructor() {
         this.ACCESS_TOKEN_EXPIRY = '15m';
@@ -28,14 +31,32 @@ class UserService {
     }
     registerUser(userData) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { email } = userData;
+            const { email, password } = userData;
             // Check if user already exists
             const existingUser = yield userModel_1.default.findOne({ email });
             if (existingUser) {
                 throw new errorHandler_1.AppError('User with this email already exists', 400);
             }
+            // Validate password strength
+            const passwordValidation = securityService_1.securityService.validatePasswordStrength(password);
+            if (!passwordValidation.valid) {
+                throw new errorHandler_1.AppError(`Password does not meet requirements: ${passwordValidation.errors.join(', ')}`, 400);
+            }
             // Create new user
             const user = new userModel_1.default(userData);
+            // Generate verification token
+            const verificationToken = yield authService_1.authService.setEmailVerificationToken(user._id);
+            // Save user
+            yield user.save();
+            // Send verification email
+            try {
+                yield emailService_1.emailService.sendVerificationEmail(user.email, verificationToken, user.name);
+                logger_1.default.info(`Verification email sent to ${user.email}`);
+            }
+            catch (error) {
+                logger_1.default.error('Failed to send verification email:', error);
+                // Don't fail registration if email fails
+            }
             // Generate tokens
             const accessToken = this.generateAccessToken(user._id);
             const refreshToken = this.generateRefreshToken(user._id);
@@ -54,25 +75,41 @@ class UserService {
             };
         });
     }
-    loginUser(loginData) {
-        return __awaiter(this, void 0, void 0, function* () {
+    loginUser(loginData_1) {
+        return __awaiter(this, arguments, void 0, function* (loginData, ip = 'unknown') {
             const { email, password } = loginData;
             // Find user
             const user = yield userModel_1.default.findOne({ email });
             if (!user) {
+                // Record failed attempt even if user doesn't exist (for rate limiting)
+                yield securityService_1.securityService.recordFailedLoginAttempt(email, ip);
                 throw new errorHandler_1.AppError('Invalid email or password', 401);
+            }
+            // Check if account is locked
+            const isLocked = yield securityService_1.securityService.isAccountLocked(user._id);
+            if (isLocked) {
+                const remainingTime = yield securityService_1.securityService.getRemainingLockTime(user._id);
+                throw new errorHandler_1.AppError(`Account is temporarily locked due to multiple failed login attempts. Please try again in ${remainingTime} minutes.`, 423);
             }
             // Check password
             const isPasswordValid = yield user.comparePassword(password);
             if (!isPasswordValid) {
+                yield securityService_1.securityService.recordFailedLoginAttempt(email, ip);
                 throw new errorHandler_1.AppError('Invalid email or password', 401);
             }
+            // Check if email is verified (optional - uncomment to enforce)
+            // if (!user.emailVerified) {
+            //   throw new AppError('Please verify your email address before logging in', 403);
+            // }
+            // Record successful login
+            yield securityService_1.securityService.recordSuccessfulLogin(user._id, ip);
             // Generate tokens
             const accessToken = this.generateAccessToken(user._id);
             const refreshToken = this.generateRefreshToken(user._id);
             // Save refresh token to user
             user.refreshToken = refreshToken;
             yield user.save();
+            logger_1.default.info(`User logged in: ${email} from IP ${ip}`);
             return {
                 user: {
                     id: user._id,
@@ -130,8 +167,14 @@ class UserService {
             user.resetPasswordExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
             yield user.save();
             // Send email with reset link
-            const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
-            // await sendPasswordResetEmail(user.email, resetUrl);
+            try {
+                yield emailService_1.emailService.sendPasswordResetEmail(user.email, resetToken, user.name);
+                logger_1.default.info(`Password reset email sent to ${user.email}`);
+            }
+            catch (error) {
+                logger_1.default.error('Failed to send password reset email:', error);
+                throw new errorHandler_1.AppError('Failed to send password reset email', 500);
+            }
         });
     }
     resetPassword(token, newPassword) {
@@ -149,12 +192,38 @@ class UserService {
             if (!user) {
                 throw new errorHandler_1.AppError('Password reset token is invalid or has expired', 400);
             }
+            // Validate password strength
+            const passwordValidation = securityService_1.securityService.validatePasswordStrength(newPassword);
+            if (!passwordValidation.valid) {
+                throw new errorHandler_1.AppError(`Password does not meet requirements: ${passwordValidation.errors.join(', ')}`, 400);
+            }
+            // Check password history
+            const isPasswordUnique = yield securityService_1.securityService.checkPasswordHistory(user._id, newPassword);
+            if (!isPasswordUnique) {
+                throw new errorHandler_1.AppError('Cannot reuse a recent password. Please choose a different password.', 400);
+            }
+            // Add current password to history before updating
+            if (user.password) {
+                if (!user.passwordHistory) {
+                    user.passwordHistory = [];
+                }
+                user.passwordHistory.push({
+                    hash: user.password,
+                    changedAt: new Date()
+                });
+                // Keep only last 5 passwords
+                if (user.passwordHistory.length > 5) {
+                    user.passwordHistory = user.passwordHistory.slice(-5);
+                }
+            }
             // Update password and clear reset token fields
             user.password = newPassword;
+            user.passwordChangedAt = new Date();
             user.resetPasswordToken = undefined;
             user.resetPasswordExpires = undefined;
             user.refreshToken = undefined; // Invalidate all sessions
             yield user.save();
+            logger_1.default.info(`Password reset successful for user: ${user.email}`);
         });
     }
     getUserById(userId) {
